@@ -1,0 +1,10 @@
+﻿@page
+@model Web.Pages.Lessons.ShowModel
+@{
+}
+
+@if (Model.Subject is not null)
+{
+    <p>@Model.Subject.Id</p>
+    <p>@Model.Subject.Title</p>
+}

@@ -1,0 +1,7 @@
+﻿services:
+  maketopgreatagain:
+    image: maketopgreatagain
+    build:
+      context: .
+      dockerfile: MakeTopGreatAgain/Dockerfile
+

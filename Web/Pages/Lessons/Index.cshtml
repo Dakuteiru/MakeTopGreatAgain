@@ -1,0 +1,44 @@
+﻿@page
+@model Web.Pages.Lessons.IndexModel
+@{
+    ViewData["Title"] = "Lessons";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h2>Новый предмет</h2>
+
+<form method="post">
+    <input name="title" />
+    <input type="submit" value="Создать" />
+</form>
+
+<h2>Предметы</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Subjects.Count > 0)
+        {
+            @foreach(var subject in Model.Subjects)
+            {
+                <tr>
+                    <td>@subject.Id</td>
+                    <td>@subject.Title</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2">Нет предметов</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
