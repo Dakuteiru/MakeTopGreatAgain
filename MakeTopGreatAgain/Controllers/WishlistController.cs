@@ -25,16 +25,18 @@ public class WishlistController(
             return Unauthorized();
         }
         
-        //var product = await context.Products.FindAsync(id);
+        var product = await context.Subjects.FindAsync(id);
 
-      //  if (product == null)
-       // {
-       //     return NotFound();
-       // }
+       if (product == null)
+       {
+            return NotFound();
+        }
+
+        await context.Entry(user).Collection(e => e.Wishlist).LoadAsync();
         
-       // user.Wishlist.Add(product);
+       user.Wishlist.Add(product);
 
-       // await context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return Ok();
     }

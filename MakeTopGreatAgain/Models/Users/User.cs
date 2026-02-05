@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MakeTopGreatAgain.Models.Subjects;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace MakeTopGreatAgain.Models.Users;
@@ -12,5 +13,5 @@ public class User : IdentityUser
     
     public virtual DateTime? BirthDate { get; set; }
 
-    public virtual IList<Product>? Wishlist { get; set; }
+    public virtual IList<Subject>? Wishlist { get; set; }
 }

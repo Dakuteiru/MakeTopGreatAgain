@@ -27,10 +27,18 @@ namespace MakeTopGreatAgain.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Update()
+        public async Task<IActionResult> Update(string name, string surName)
         {
             var user = await userManager.GetUserAsync(User);
-           
+
+            if (name == null || surName == null)
+            {
+                return NotFound();
+            }
+            user.Name = name;
+            user.Surname = surName;
+
+
             return Ok();
         }
     }
