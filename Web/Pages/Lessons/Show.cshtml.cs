@@ -10,9 +10,9 @@ namespace Web.Pages.Lessons
     {
         public Subject? Subject { get; set; }
 
-        public IActionResult OnGet(Guid guid)
+        public IActionResult OnGet(Guid id)
         {
-            Subject = context.Subjects.FirstOrDefault(x => x.Id == guid);
+            Subject = context.Subjects.FirstOrDefault(x => x.Id == id);
 
             if (Subject is null) 
             {

@@ -1,9 +1,11 @@
 using MakeTopGreatAgain.Database;
 using MakeTopGreatAgain.Models;
+using MakeTopGreatAgain.Models.Subjects;
 using MakeTopGreatAgain.Models.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Tasks.Deployment.Bootstrapper;
 
 namespace MakeTopGreatAgain.Controllers;
 
@@ -24,20 +26,35 @@ public class WishlistController(
         {
             return Unauthorized();
         }
-        
+
         var product = await context.Subjects.FindAsync(id);
 
-       if (product == null)
-       {
+        if (product == null)
+        {
             return NotFound();
         }
 
         await context.Entry(user).Collection(e => e.Wishlist).LoadAsync();
-        
-       user.Wishlist.Add(product);
+
+        user.Wishlist.Add(product);
 
         await context.SaveChangesAsync();
 
         return Ok();
     }
+    [HttpGet]
+    [Authorize]
+    public async Task<ActionResult<IList<Subject>>> Get()
+    {
+        var user = await userManager.GetUserAsync(User);
+        await context.Entry(user).Collection(e => e.Wishlist).LoadAsync();
+        if (user.Wishlist == null)
+        {
+            return NotFound();
+        }
+       
+        return user.Wishlist.ToList(); 
+    }
+
+  
 }

@@ -22,7 +22,7 @@ namespace MakeTopGreatAgain.Controllers
             {
                 return Unauthorized();
             }
-            return Ok();
+            return user;
         }
 
         [HttpPost]
@@ -38,6 +38,7 @@ namespace MakeTopGreatAgain.Controllers
             user.Name = name;
             user.Surname = surName;
 
+            await context.SaveChangesAsync();
 
             return Ok();
         }
