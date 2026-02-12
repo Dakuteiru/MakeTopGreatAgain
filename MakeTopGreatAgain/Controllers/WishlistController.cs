@@ -22,11 +22,6 @@ public class WishlistController(
     {
         var user = await userManager.GetUserAsync(User);
 
-        if (user == null)
-        {
-            return Unauthorized();
-        }
-
         var product = await context.Subjects.FindAsync(id);
 
         if (product == null)
@@ -34,7 +29,7 @@ public class WishlistController(
             return NotFound();
         }
 
-        await context.Entry(user).Collection(e => e.Wishlist).LoadAsync();
+       
 
         user.Wishlist.Add(product);
 
@@ -47,7 +42,7 @@ public class WishlistController(
     public async Task<ActionResult<IList<Subject>>> Get()
     {
         var user = await userManager.GetUserAsync(User);
-        await context.Entry(user).Collection(e => e.Wishlist).LoadAsync();
+       
         if (user.Wishlist == null)
         {
             return NotFound();

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using Group = MakeTopGreatAgain.Models.Users.Group;
 
 namespace MakeTopGreatAgain.Controllers
 {
@@ -41,6 +42,18 @@ namespace MakeTopGreatAgain.Controllers
             await context.SaveChangesAsync();
 
             return Ok();
+        }
+        [HttpPut]
+        [Authorize]//admin
+        public async Task<ActionResult<Group>> Create(string groupeName,Group group)
+        {
+            var entry = await context.Groups.AddAsync(group);
+          
+            entry.Entity.StartedAt= DateTime.Now;
+            entry.Entity.Name = groupeName;
+
+            await context.SaveChangesAsync();
+            return entry.Entity;
         }
     }
 }

@@ -60,7 +60,7 @@ public class SubjectsController(
     {
         var entry = await context.Subjects.AddAsync(item);
         await context.SaveChangesAsync();
-        
+
         return entry.Entity;
     }
 

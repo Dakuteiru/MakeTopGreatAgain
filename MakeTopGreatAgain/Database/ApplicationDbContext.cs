@@ -26,4 +26,10 @@ public class ApplicationDbContext(
 
         base.OnModelCreating(builder);
     }
+     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+     {
+         optionsBuilder
+         .UseLazyLoadingProxies()        // подключение lazy loading
+         .UseSqlite("Data Source=Journal.db");
+     }
 }
