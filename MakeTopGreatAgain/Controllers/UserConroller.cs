@@ -43,17 +43,6 @@ namespace MakeTopGreatAgain.Controllers
 
             return Ok();
         }
-        [HttpPut]
-        [Authorize]//admin
-        public async Task<ActionResult<Group>> Create(string groupeName,Group group)
-        {
-            var entry = await context.Groups.AddAsync(group);
-          
-            entry.Entity.StartedAt= DateTime.Now;
-            entry.Entity.Name = groupeName;
-
-            await context.SaveChangesAsync();
-            return entry.Entity;
-        }
+      
     }
 }
