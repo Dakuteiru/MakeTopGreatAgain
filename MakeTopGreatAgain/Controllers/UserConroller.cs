@@ -43,6 +43,19 @@ namespace MakeTopGreatAgain.Controllers
 
             return Ok();
         }
+        [HttpPost("join")]
+        [Authorize]
+        public async Task<IActionResult> JoinGroup(Guid GroupID)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var group = await context.Groups.FindAsync(GroupID);
+            user.Group = group;
+
+            group.Users.Add(user);
+            await context.SaveChangesAsync();
+            return Ok();
+        }
+
       
     }
 }

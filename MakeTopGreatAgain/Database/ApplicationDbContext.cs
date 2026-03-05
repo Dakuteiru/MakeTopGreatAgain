@@ -24,6 +24,14 @@ public class ApplicationDbContext(
             .HasMany(x => x.Wishlist)
             .WithMany();
 
+        builder.Entity<Group>()
+            .HasMany(x => x.Users)
+            .WithOne(x => x.Group);
+
+        builder.Entity<Group>()
+            .HasOne(x => x.Sensei)
+            .WithMany();
+
         base.OnModelCreating(builder);
     }
    

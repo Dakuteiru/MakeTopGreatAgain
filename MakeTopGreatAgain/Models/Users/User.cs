@@ -14,4 +14,6 @@ public class User : IdentityUser
     public virtual DateTime? BirthDate { get; set; }
 
     public virtual IList<Subject>? Wishlist { get; set; }
+
+    public virtual Group? Group { get; set; }
 }

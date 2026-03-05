@@ -16,4 +16,4 @@ public class Lesson
     public virtual required Homework Homework { get; set; }
     
     public virtual required DateTime StartedAt { get; set; }
-}
+}                                                           
