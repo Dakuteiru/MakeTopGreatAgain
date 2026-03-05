@@ -15,5 +15,5 @@ public class Group
     
     public virtual User? Sensei { get; set; }
     
-    public virtual IList<User>? Users { get; set; } 
+    public virtual IList<User>? Users { get; set; } //предположительная угроза рекурсии при get
 }
