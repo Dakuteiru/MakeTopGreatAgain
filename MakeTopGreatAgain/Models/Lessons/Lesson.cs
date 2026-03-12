@@ -13,7 +13,7 @@ public class Lesson
     public virtual required Group Group { get; set; } 
     public virtual required Subject Subject { get; set; }
     
-    public virtual required Homework Homework { get; set; }
+    public virtual required Homework? Homework { get; set; }
     
     public virtual required DateTime StartedAt { get; set; }
 }                                                           

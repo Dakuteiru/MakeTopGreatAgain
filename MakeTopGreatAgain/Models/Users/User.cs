@@ -15,5 +15,5 @@ public class User : IdentityUser
 
     public virtual IList<Subject>? Wishlist { get; set; }
 
-    public virtual Group? Group { get; set; }//предположительная угроза рекурсии при get
+    public virtual GroupStudents? Group { get; set; }
 }

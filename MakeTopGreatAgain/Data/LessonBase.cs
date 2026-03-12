@@ -9,7 +9,8 @@ namespace MakeTopGreatAgain.Data;
 
 public class LessonBase
 {
-    public virtual required String SubjectID { get; init; }
+    public virtual Guid GroupID { get; init; }
+    public virtual required Guid SubjectID { get; init; }
     
     public virtual required DateTime StartedAt { get; init; }
 }

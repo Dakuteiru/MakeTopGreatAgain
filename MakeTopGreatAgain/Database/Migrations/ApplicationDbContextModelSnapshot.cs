@@ -79,7 +79,7 @@ namespace MakeTopGreatAgain.Database.Migrations
                     b.Property<Guid>("GroupId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("HomeworkId")
+                    b.Property<Guid?>("HomeworkId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartedAt")
@@ -144,6 +144,27 @@ namespace MakeTopGreatAgain.Database.Migrations
                     b.ToTable("Groups");
                 });
 
+            modelBuilder.Entity("MakeTopGreatAgain.Models.Users.GroupStudents", b =>
+                {
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StudentId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("GroupId", "StudentId");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("StudentId")
+                        .IsUnique();
+
+                    b.ToTable("GroupStudents");
+                });
+
             modelBuilder.Entity("MakeTopGreatAgain.Models.Users.User", b =>
                 {
                     b.Property<string>("Id")
@@ -165,9 +186,6 @@ namespace MakeTopGreatAgain.Database.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
-
-                    b.Property<Guid?>("GroupId")
-                        .HasColumnType("TEXT");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
@@ -211,8 +229,6 @@ namespace MakeTopGreatAgain.Database.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -415,9 +431,7 @@ namespace MakeTopGreatAgain.Database.Migrations
 
                     b.HasOne("MakeTopGreatAgain.Models.Lessons.Homework", "Homework")
                         .WithMany()
-                        .HasForeignKey("HomeworkId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HomeworkId");
 
                     b.HasOne("MakeTopGreatAgain.Models.Subjects.Subject", "Subject")
                         .WithMany()
@@ -447,13 +461,29 @@ namespace MakeTopGreatAgain.Database.Migrations
                     b.Navigation("Sensei");
                 });
 
-            modelBuilder.Entity("MakeTopGreatAgain.Models.Users.User", b =>
+            modelBuilder.Entity("MakeTopGreatAgain.Models.Users.GroupStudents", b =>
                 {
                     b.HasOne("MakeTopGreatAgain.Models.Users.Group", "Group")
-                        .WithMany("Users")
-                        .HasForeignKey("GroupId");
+                        .WithMany("UsersSt")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId");
+
+                    b.HasOne("MakeTopGreatAgain.Models.Users.User", "Student")
+                        .WithOne("Group")
+                        .HasForeignKey("MakeTopGreatAgain.Models.Users.GroupStudents", "StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Group");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -524,7 +554,12 @@ namespace MakeTopGreatAgain.Database.Migrations
 
             modelBuilder.Entity("MakeTopGreatAgain.Models.Users.Group", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("UsersSt");
+                });
+
+            modelBuilder.Entity("MakeTopGreatAgain.Models.Users.User", b =>
+                {
+                    b.Navigation("Group");
                 });
 #pragma warning restore 612, 618
         }

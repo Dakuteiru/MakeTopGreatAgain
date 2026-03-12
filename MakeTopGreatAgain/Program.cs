@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Linq.Expressions;
+using MakeTopGreatAgain.Middleware.Restrict;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +21,7 @@ builder.Services.AddEndpointsApiExplorer();
 var connectionString = builder.Configuration.GetConnectionString("Default");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseLazyLoadingProxies().UseSqlite(connectionString));//сюда много что мозно подключать
+    options.UseLazyLoadingProxies().UseSqlite(connectionString));
 
 builder.Services.AddIdentityApiEndpoints<User>().AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -45,7 +46,19 @@ builder.Services.AddAutoMapper(mapper =>
     .ForMember(
         data => data.SubjectID,
         expression => expression.MapFrom(subject=>subject.Subject.Id)
-    ).ReverseMap();
+    );
+    mapper.CreateMap<GroupStudents, GroupSt>()
+        .ForMember(data=>data.Group,
+        expression=>expression.MapFrom(user=>user.Group))
+        .ForMember(data=>data.Name,
+            expression=>expression.MapFrom(obj=>obj.Student.Name))
+        .ForMember(data=>data.Surname,
+            expression=>expression.MapFrom(obj=>obj.Student.Surname))
+        .ForMember(data=>data.BirthDate,
+            expression=>expression.MapFrom(obj=>obj.Student.BirthDate))
+        .ForMember(data=>data.Wishlist,
+            expression=>expression.MapFrom(obj=>obj.Student.Wishlist))
+        .ReverseMap();    
 }
     );
 
@@ -61,7 +74,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseMiddleware<RestrictMiddleware>();
 app.MapControllers();
 app.MapIdentityApi<User>();
 app.Run();

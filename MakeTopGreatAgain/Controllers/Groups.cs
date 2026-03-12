@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MakeTopGreatAgain.Data;
 using MakeTopGreatAgain.Database;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System.Text.RegularExpressions;
+using MakeTopGreatAgain.Middleware.Restrict;
 using Group = MakeTopGreatAgain.Models.Users.Group;
 
 namespace MakeTopGreatAgain.Controllers
@@ -21,6 +23,7 @@ namespace MakeTopGreatAgain.Controllers
     {
 
         [HttpGet]
+//[Restrict(["127.0.0.1"])]
         public async Task<ActionResult<ICollection<GroupDate>>> Index()
         {
             return await context.Groups

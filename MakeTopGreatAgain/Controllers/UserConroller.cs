@@ -6,24 +6,28 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using AutoMapper;
+using MakeTopGreatAgain.Data;
+using MakeTopGreatAgain.Models.Subjects;
 using Group = MakeTopGreatAgain.Models.Users.Group;
 
 namespace MakeTopGreatAgain.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class UserConroller(UserManager<User> userManager, ApplicationDbContext context) : ControllerBase
+    public class UserConroller(IMapper mapper, UserManager<User> userManager, ApplicationDbContext context) : ControllerBase
     {
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<User>> Get()
+        public async Task<ActionResult<GroupSt>> Get()
         {
             var user = await userManager.GetUserAsync(User);
             if (user == null)
             {
                 return Unauthorized();
             }
-            return user;
+            var gcr =  mapper.Map<GroupSt>(user.Group);
+            return gcr;
         }
 
         [HttpPost]
@@ -47,15 +51,35 @@ namespace MakeTopGreatAgain.Controllers
         [Authorize]
         public async Task<IActionResult> JoinGroup(Guid GroupID)
         {
+            
             var user = await userManager.GetUserAsync(User);
             var group = await context.Groups.FindAsync(GroupID);
-            user.Group = group;
+            var groupStudents= new GroupStudents
+            {
+                Student= user,
+                Group=group
+            }; 
+            user.Group= groupStudents;
 
-            group.Users.Add(user);
+           group.UsersSt.Add(groupStudents);
             await context.SaveChangesAsync();
             return Ok();
         }
 
       
     }
+}
+public class GroupSt
+{
+    public virtual GroupCreateRequest Group { get; set; }
+    
+    public virtual IdentityRole? Role { get; set; }
+   
+    public virtual string? Name { get; set; }
+   
+    public virtual string? Surname { get; set; }
+    
+    public virtual DateTime? BirthDate { get; set; }
+
+    public virtual IList<Subject>? Wishlist { get; set; }
 }

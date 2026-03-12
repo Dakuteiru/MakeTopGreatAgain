@@ -31,8 +31,8 @@ public class LessonController(
             return NotFound();
         }
 
-        var lesson = await context.Lessons
-            .Where(x => x.Group==(group))
+       var lesson = await context.Lessons
+            .Where(x => x.Group.Id==(group.Group.Id))
             .ToListAsync();
 
 
@@ -43,12 +43,22 @@ public class LessonController(
         return lesson;
     }
     [HttpPut]
-    [Authorize(Roles = "modder,adimin")]
-    public async Task<ActionResult> Put(LessonBase lessonBase, Guid IDGroupe)
+    [Authorize/*(Roles = "modder,adimin")*/]
+    public async Task<ActionResult> Put(LessonBase lessonBase)
     {
-        var lessons = mapper.Map<Lesson>(lessonBase);
-        Group group = await context.Groups.FindAsync(IDGroupe);
-        lessons.Group = group;
+        
+        
+        Group group = await context.Groups.FindAsync(lessonBase.GroupID);
+        Subject subject = await context.Subjects.FindAsync(lessonBase.SubjectID);
+        var les = new Lesson
+        {
+            Teacher = group.Sensei,
+            Group = group,
+            Subject = subject,
+            Homework = null,
+            StartedAt = lessonBase.StartedAt
+        };
+        var entry = await context.Lessons.AddAsync(les);
         await context.SaveChangesAsync();
         return Ok();
     }
