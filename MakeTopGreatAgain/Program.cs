@@ -1,6 +1,7 @@
 using AutoMapper;
 using MakeTopGreatAgain.Data;
 using MakeTopGreatAgain.Database;
+using MakeTopGreatAgain.Middleware.Restrict;
 using MakeTopGreatAgain.Models.Lessons;
 using MakeTopGreatAgain.Models.Users;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Linq.Expressions;
-using MakeTopGreatAgain.Middleware.Restrict;
+using static MakeTopGreatAgain.Controllers.LessonController;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,10 +56,13 @@ builder.Services.AddAutoMapper(mapper =>
         .ForMember(data=>data.Surname,
             expression=>expression.MapFrom(obj=>obj.Student.Surname))
         .ForMember(data=>data.BirthDate,
-            expression=>expression.MapFrom(obj=>obj.Student.BirthDate))
+            expression=>expression.MapFrom(obj=>obj.Student.BirthDate))//LessonGCR
         .ForMember(data=>data.Wishlist,
             expression=>expression.MapFrom(obj=>obj.Student.Wishlist))
-        .ReverseMap();    
+        .ReverseMap();
+    mapper.CreateMap<Lesson, LessonGCR>()
+     .ForMember(data => data.Group,
+        expression => expression.MapFrom(obj => obj.Group)).ReverseMap();
 }
     );
 

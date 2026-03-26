@@ -54,8 +54,8 @@ public class RolesController(IMapper mapper,
 
     }
     [HttpGet]
-    [Authorize(Roles = "admin")]
-    [Authorize(Roles = "modder")]//тут две роли будут только доспускать
+    //[Authorize(Roles = "admin")]
+   // [Authorize(Roles = "modder")]//тут две роли будут только доспускать
     public async Task<IList<string>> Get(string UserEmail)
 
     {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MakeTopGreatAgain.Data;
 using MakeTopGreatAgain.Database;
 using MakeTopGreatAgain.Models.Lessons;
@@ -21,7 +22,7 @@ public class LessonController(
 
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<IList<Lesson>>> Get()
+    public async Task<ActionResult<IList<LessonGCR>>> Get()
     {
         var user = await userManager.GetUserAsync(User);
 
@@ -33,6 +34,7 @@ public class LessonController(
 
        var lesson = await context.Lessons
             .Where(x => x.Group.Id==(group.Group.Id))
+            .ProjectTo<LessonGCR>(mapper.ConfigurationProvider)
             .ToListAsync();
 
 
@@ -40,7 +42,8 @@ public class LessonController(
         {
             return NotFound();
         }
-        return lesson;
+
+        return lesson; 
     }
     [HttpPut]
     [Authorize/*(Roles = "modder,adimin")*/]
@@ -62,11 +65,21 @@ public class LessonController(
         await context.SaveChangesAsync();
         return Ok();
     }
-    
 
 
-   
 
+
+    public class LessonGCR
+    {
+        public virtual GroupCreateRequest Group { get; init; }
+
+        public virtual required User Teacher { get; set; }
+        public virtual required Subject Subject { get; set; }
+
+        public virtual required Homework? Homework { get; set; }
+
+        public virtual required DateTime StartedAt { get; set; }
+    }
 
 
 }
