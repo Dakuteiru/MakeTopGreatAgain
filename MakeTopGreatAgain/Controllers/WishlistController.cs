@@ -51,5 +51,10 @@ public class WishlistController(
         return user.Wishlist.ToList(); 
     }
 
-  
+    [HttpGet("check")]
+    public async Task<ActionResult> GetCheck()
+    {
+        return Ok("my word from wishlist");
+    }
+
 }

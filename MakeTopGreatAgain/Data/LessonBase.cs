@@ -11,6 +11,7 @@ public class LessonBase
 {
     public virtual Guid GroupID { get; init; }
     public virtual required Guid SubjectID { get; init; }
+    public virtual required String TeacherId { get; init; }
     
     public virtual required DateTime StartedAt { get; init; }
 }

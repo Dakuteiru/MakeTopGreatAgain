@@ -19,7 +19,7 @@ namespace MakeTopGreatAgain.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Groups(IMapper mapper,ApplicationDbContext context) : ControllerBase
+    public class Groups(IMapper mapper,ApplicationDbContext context,UserManager<User> userManager) : ControllerBase
     {
 
         [HttpGet]
@@ -52,12 +52,35 @@ namespace MakeTopGreatAgain.Controllers
             await context.SaveChangesAsync();
             return Ok();
         }
-       /* [HttpGet]
-        [Authorize]//admin
-        public async Task<ActionResult<IEnumerable<Group>> >Get()
+
+        [HttpPost("ChangeSensei")]
+        [Authorize]
+        public async Task<IActionResult> Update(string userId, Guid groupId)
         {
-            return await context.Groups.ToListAsync();
-        }*/
+            var user= await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var group = await context.Groups.FindAsync(groupId);
+            group.Sensei = user;
+            await context.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpDelete]
+        [Authorize]
+        public async Task Del(Guid GroupId)
+        {
+            var groups = await context.Groups.FindAsync(GroupId);
+            context.Groups.Remove(groups);
+            await context.SaveChangesAsync();
+        }
+        /* [HttpGet]
+         [Authorize]//admin
+         public async Task<ActionResult<IEnumerable<Group>> >Get()
+         {
+             return await context.Groups.ToListAsync();
+         }*/
     }
 }
 

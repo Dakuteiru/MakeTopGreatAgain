@@ -33,7 +33,7 @@ public class RolesController(IMapper mapper,
 
     }*/
     [HttpPost]
-    [Authorize(Roles = "admin, modder, manager")]
+   // [Authorize(Roles = "admin, modder, manager")]
     public async Task Post(UserData targetUser, string NameRole)
     {
         var chosenUser = mapper.Map<User>(targetUser);
@@ -44,7 +44,7 @@ public class RolesController(IMapper mapper,
 
 
     [HttpPut]
-    [Authorize(Roles = "admin, modder")]
+   // [Authorize(Roles = "admin, modder")]
     public async Task Put(string NameRole)
     {
         //var user = await userManager.GetUserAsync(User);
@@ -64,7 +64,7 @@ public class RolesController(IMapper mapper,
     }
 
     [HttpGet("allRoles")]
-    [Authorize(Roles = "admin")]
+   // [Authorize(Roles = "admin")]
     public async Task<ActionResult<IEnumerable<IdentityRole>>> GetAllRoles()
 
     {
@@ -74,7 +74,7 @@ public class RolesController(IMapper mapper,
 
 
     [HttpDelete]
-    [Authorize(Roles = "admin, modder")]
+  //  [Authorize(Roles = "admin, modder")]
     public async Task Del(string? UserID , string targerRole)
     {
         if (UserID != null)

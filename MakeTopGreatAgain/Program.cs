@@ -47,7 +47,27 @@ builder.Services.AddAutoMapper(mapper =>
     .ForMember(
         data => data.SubjectID,
         expression => expression.MapFrom(subject=>subject.Subject.Id)
-    );
+    )
+    .ForMember(
+        data => data.TeacherId,
+        expression => expression.MapFrom(subject=>subject.Teacher.Id)
+    )
+    .ForMember(
+        data => data.TeacherId,
+        expression => expression.MapFrom(subject=>subject.Teacher.Id)
+    );;
+    mapper.CreateMap<HomeworkCompletion, HwCOutput>()
+        .ForMember(data => data.Homework,
+            expression => expression.MapFrom(hw=>hw.Homework))
+        .ForMember(data => data.Name,
+            expression => expression.MapFrom(hw=>hw.Student.Name))
+        .ForMember(data => data.Surname,
+            expression => expression.MapFrom(hw=>hw.Student.Surname))
+        .ForMember(data => data.score,
+            expression => expression.MapFrom(hw=>hw.Score))
+        .ReverseMap();
+
+        
     mapper.CreateMap<GroupStudents, GroupSt>()
         .ForMember(data=>data.Group,
         expression=>expression.MapFrom(user=>user.Group))
@@ -59,15 +79,26 @@ builder.Services.AddAutoMapper(mapper =>
             expression=>expression.MapFrom(obj=>obj.Student.BirthDate))//LessonGCR
         .ForMember(data=>data.Wishlist,
             expression=>expression.MapFrom(obj=>obj.Student.Wishlist))
+        .ForMember(data => data.Id,
+        expression=>expression.MapFrom(obj => obj.Student.Id))
         .ReverseMap();
     mapper.CreateMap<Lesson, LessonGCR>()
      .ForMember(data => data.Group,
-        expression => expression.MapFrom(obj => obj.Group)).ReverseMap();
+        expression => expression.MapFrom(obj => obj.Group))
+     .ForMember(data => data.LessonId, expression => expression.MapFrom(obj => obj.Id))
+     .ForMember(data => data.TeacherName, expression => expression.MapFrom(obj => obj.Teacher.Name))
+     .ForMember(data => data.TeacherSurname, expression => expression.MapFrom(obj => obj.Teacher.Surname))
+     .ForMember(data => data.Subject, expression => expression.MapFrom(obj => obj.Subject))
+     .ReverseMap();
 }
     );
 
 var app = builder.Build();
 
+app.UseCors(policy => policy
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 if (app.Environment.IsDevelopment())
 {

@@ -15,7 +15,7 @@ namespace MakeTopGreatAgain.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class UserConroller(IMapper mapper, UserManager<User> userManager, ApplicationDbContext context) : ControllerBase
+    public class UserController(IMapper mapper, UserManager<User> userManager, ApplicationDbContext context) : ControllerBase
     {
         [HttpGet]
         [Authorize]
@@ -82,4 +82,5 @@ public class GroupSt
     public virtual DateTime? BirthDate { get; set; }
 
     public virtual IList<Subject>? Wishlist { get; set; }
+    public virtual string Id { get; set; }
 }
