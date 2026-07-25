@@ -116,12 +116,7 @@ public class LessonController(
         if (!await context.Lessons
                 .Where(x => x.Group.Id==(group.Id))
                 .Where(x =>(x.StartedAt>lessonBase.StartedAt.AddMinutes(-90)
-                    && x.StartedAt<lessonBase.StartedAt)
-                || (x.StartedAt<lessonBase.StartedAt.AddMinutes(90)
-                    && x.StartedAt>lessonBase.StartedAt))
-                .Where(x => x.StartedAt.Day==( lessonBase.StartedAt.Day))
-                .Where(x => x.StartedAt.Year==( lessonBase.StartedAt.Year))
-                .Where(x => x.StartedAt.Month==( lessonBase.StartedAt.Month))
+                    && x.StartedAt<lessonBase.StartedAt.AddMinutes(90)))
                 .AnyAsync()
             )
         {
