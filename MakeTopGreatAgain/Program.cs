@@ -31,6 +31,7 @@ builder.Services.AddIdentityApiEndpoints<User>().AddRoles<IdentityRole>()
 
 builder.Services.AddAutoMapper(mapper =>
 {
+    
     mapper.CreateMap<Group, GroupDate>();
     mapper.CreateMap<Group, GroupCreateRequest>()
                     .ForMember(
@@ -43,6 +44,13 @@ builder.Services.AddAutoMapper(mapper =>
                         data => data.startsAt,
                         expression => expression.MapFrom(group => group.StartedAt)).ReverseMap(); 
     mapper.CreateMap<User, UserData>().ReverseMap();
+    mapper.CreateMap<Attendees, GetAttend>()
+        .ForMember(data => data.Id,
+            expression => expression.MapFrom(subject => subject.LessonId))
+        .ForMember(data => data.Name,
+            expression => expression.MapFrom(subject => subject.Student.Name));
+
+        
     mapper.CreateMap<Lesson, LessonBase>()
     .ForMember(
         data => data.SubjectID,
