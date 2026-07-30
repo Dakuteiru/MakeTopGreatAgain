@@ -47,6 +47,10 @@ namespace MakeTopGreatAgain.Database.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("TeacherFile")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Homeworks");
@@ -62,6 +66,9 @@ namespace MakeTopGreatAgain.Database.Migrations
 
                     b.Property<int>("Score")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("StudentFile")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("HomeworkId", "StudentId");
 

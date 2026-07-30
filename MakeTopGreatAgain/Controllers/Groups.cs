@@ -31,6 +31,25 @@ namespace MakeTopGreatAgain.Controllers
                 .ProjectTo<GroupDate>(mapper.ConfigurationProvider)
                 .ToListAsync();
         }
+        [HttpGet("studentsCurrentGroup")]
+//[Restrict(["127.0.0.1"])]
+        public async Task<ActionResult<ICollection<GroupDateStudents>>> IndexCurrenGroup(Guid groupId)
+        {
+            return await context.Groups
+                .Include(x => x.Sensei)
+                .Where(x =>  x.Id==groupId)
+                .ProjectTo<GroupDateStudents>(mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+        [HttpGet("studentsAllGroups")]
+//[Restrict(["127.0.0.1"])]
+        public async Task<ActionResult<ICollection<GroupDateStudents>>> IndexFullList()
+        {
+            return await context.Groups
+                .Include(x => x.Sensei)
+                .ProjectTo<GroupDateStudents>(mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
         [HttpPut]
         [Authorize]//admin
         public async Task<ActionResult<Group>> Create(GroupCreateRequest group)

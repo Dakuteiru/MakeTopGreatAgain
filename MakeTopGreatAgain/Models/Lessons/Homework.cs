@@ -9,4 +9,5 @@ public class Homework
     
     public virtual string? Description { get; set; }
     public virtual DateTime Deadline { get; set; }
+    public virtual string TeacherFile {get; set; }
 }

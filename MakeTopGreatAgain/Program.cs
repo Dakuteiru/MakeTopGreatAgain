@@ -33,6 +33,12 @@ builder.Services.AddAutoMapper(mapper =>
 {
     
     mapper.CreateMap<Group, GroupDate>();
+    mapper.CreateMap<Group, GroupDateStudents>()
+        .ForMember(
+            data => data.Student,
+            expression => expression.MapFrom(group => group.UsersSt
+                .Select(x => x.Student)));
+        
     mapper.CreateMap<Group, GroupCreateRequest>()
                     .ForMember(
                         data => data.Title,
@@ -63,7 +69,7 @@ builder.Services.AddAutoMapper(mapper =>
     .ForMember(
         data => data.TeacherId,
         expression => expression.MapFrom(subject=>subject.Teacher.Id)
-    );;
+    );
     mapper.CreateMap<HomeworkCompletion, HwCOutput>()
         .ForMember(data => data.Homework,
             expression => expression.MapFrom(hw=>hw.Homework))

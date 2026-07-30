@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MakeTopGreatAgain.Data;
 using MakeTopGreatAgain.Models.Subjects;
 using Group = MakeTopGreatAgain.Models.Users.Group;
@@ -28,6 +29,18 @@ namespace MakeTopGreatAgain.Controllers
             }
             var gcr =  mapper.Map<GroupSt>(user.Group);
             return gcr;
+        }
+        [HttpGet("All")]
+        [Authorize]
+        public async Task<ActionResult<IList<UserData>>> GetAll()
+        {
+            var user = await context.Users.ProjectTo<UserData>(mapper.ConfigurationProvider).ToListAsync();
+            if (!user.Any())
+            {
+                return NotFound();
+            }
+           
+            return user;
         }
 
         [HttpPost]

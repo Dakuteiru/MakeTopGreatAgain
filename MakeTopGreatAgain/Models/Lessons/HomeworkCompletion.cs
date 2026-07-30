@@ -17,4 +17,5 @@ public class HomeworkCompletion
     public virtual required User Student { get; set; }
     
     public virtual int Score { get; set; }
+    public virtual string? StudentFile {get; set; }
 }

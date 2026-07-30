@@ -16,13 +16,25 @@ namespace MakeTopGreatAgain.Controllers
         : ControllerBase
     {
         [HttpPut]
-        public async Task<ActionResult> Homework(Homework homework)
+        public async Task<ActionResult> Homework(Homework homework, Guid groupId)
         {
             var entry = await context.Homeworks.AddAsync(homework);
+
+            var Homeworks = await context.Users
+                .Where(x => x.Group != null)
+                .Where(x => x.Group!.GroupId == groupId)
+                .Where(x => !context.HomeworkCompletions.Any(y => y.StudentId != x.Id && y.HomeworkId != homework.Id))
+                .Select(x => new HomeworkCompletion
+                {
+                    Homework = homework,
+                    Student = x,
+                    Score = 0
+                }).ToListAsync();
+            await context.HomeworkCompletions.AddRangeAsync(Homeworks);
             await context.SaveChangesAsync();
             return Ok();
         }
-
+        
         [HttpPut("Mark")]
         public async Task<ActionResult> MarkHomework(Guid Id, string UserID, int score)
         {
@@ -30,6 +42,13 @@ namespace MakeTopGreatAgain.Controllers
             var user = await userManager.FindByIdAsync(UserID);
 
             var homework = await context.Homeworks.FindAsync(Id);
+            
+            var hmw = await  context.HomeworkCompletions.FindAsync(homework.Id, UserID);
+            hmw.Score = score;
+            await context.SaveChangesAsync();
+            return Ok();
+            
+            /*
             var hmwComplet = new HomeworkCompletion
             {
                 Homework = homework,
@@ -38,7 +57,7 @@ namespace MakeTopGreatAgain.Controllers
             };
             var entry = await context.HomeworkCompletions.AddAsync(hmwComplet);
             await context.SaveChangesAsync();
-            return Ok();
+            return Ok();*/
         }
         
 
@@ -96,6 +115,44 @@ namespace MakeTopGreatAgain.Controllers
             context.Homeworks.Remove(homework);
             await context.SaveChangesAsync();
         }
+
+        [HttpPatch("StudentFile")]
+        [Authorize]
+        public async Task<ActionResult<HomeworkCompletion>> AddHomework(String FileName, Guid HomeworkID)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var homework = await context.Homeworks.FindAsync(HomeworkID);
+            
+            var HomwC = await context.HomeworkCompletions.FindAsync(user.Id, HomeworkID);
+            HomwC.StudentFile = FileName;
+            await context.SaveChangesAsync();
+            return Ok();
+                
+            
+            /*
+            HomeworkCompletion HmwC = new HomeworkCompletion
+            {
+                Homework = homework,
+                Student =  user,
+                Score = 0,
+                StudentFile = FileName
+            };
+            await  context.HomeworkCompletions.AddAsync(HmwC);
+            await context.SaveChangesAsync();
+            return Ok();
+            */
+        }
+        [HttpPatch("TeacherFile")]
+        public async Task<ActionResult<Homework>> Patch(string? file, string? desc, Guid HomeworkID)
+        {
+            var homework = await context.Homeworks.FindAsync(HomeworkID);
+            if(file!=null)
+                homework.TeacherFile = file;
+            if(desc!=null) 
+                homework.Description = desc;
+            await context.SaveChangesAsync();
+            return Ok();
+        }
     }
 
 }
@@ -107,4 +164,5 @@ public class HwCOutput
    
     public virtual string? Surname { get; set; }
     public virtual int score { get; set; }
+    public virtual string? StudentFile { get; set; }
 }

@@ -85,22 +85,42 @@ namespace MakeTopGreatAgain.Controllers
                 return NotFound();
             }
 
-            List<Attendees> Att = null;
-            List<User> Students = null;
-            try
-            {
-                Att = await context.Attendees.Where(x => x.Lesson.Id == lesson.Id).ToListAsync();
-                Students = await context.Users.Where(x=>x.Group.GroupId == lesson.Group.Id)
-                    .Where(x => !Att.Any(y => y.StudentId == x.Id)).ToListAsync();
+            //List<Attendees> Att = null;
+           // List<User> Students = null;
+            
+            
+            var absents = await context.Users
+                .Where(x => x.Group != null)
+                .Where(x => x.Group!.GroupId == lesson.Group.Id) 
+                .Where(x => !context.Attendees.Any(a => a.LessonId != lesson.Id && a.StudentId != x.Id))
+                .Select(x => new Attendees
+                {
+                    Lesson = lesson,
+                    Student = x,
+                    Presence = Presence.Absence
+                })
+                .ToListAsync();
 
+            await context.Attendees.AddRangeAsync(absents);
+            /*try
+            {
+                Att = await context.Attendees.Where(x => x.Lesson.Id == lesson.Id)
+                    .ToListAsync();
+
+                Students = await context.Users.Where(x=>x.Group.GroupId == lesson.Group.Id)
+                    .Where(x => Att.All(y => y.StudentId != x.Id))
+                    .ToListAsync();
             }
             catch
             {
-                Students = await context.Users.Where(x => x.Group.GroupId == lesson.Group.Id).ToListAsync();
+                Students = await context.Users
+                    .Where(x => x.Group.GroupId == lesson.Group.Id)
+                    .ToListAsync();
 
                 //throw new InvalidOperationException($"use Imagination ");
 
             }
+            context.Users.ForEachAsync()
              foreach (var Std in Students)
             {
                 Attendees antendess = new Attendees
@@ -111,15 +131,26 @@ namespace MakeTopGreatAgain.Controllers
                  };
                  context.Attendees.AddAsync(antendess);
                  await context.SaveChangesAsync();
-             }
-        
+             }*/
+            await context.SaveChangesAsync();
             return Ok();
         }
 
         [HttpPatch]
-        public async Task<ActionResult<Attendees>> ForLate(Guid Lesson)
+        public async Task<ActionResult<Attendees>> ForLate(Guid Lesson, String StudentId, Presence presence)
         {
-            return Ok();
+            var lesson = await context.Attendees.FindAsync(Lesson,StudentId);
+
+            context.Entry(Lesson).State = EntityState.Modified;
+            try
+            {
+                await context.SaveChangesAsync();
+            }
+            catch
+            {
+                throw;
+            }
+            return lesson;
         }
     }
 

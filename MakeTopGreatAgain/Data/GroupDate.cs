@@ -15,3 +15,16 @@ public class GroupDate
 
     public virtual UserData? Sensei { get; init; }
 }
+public class GroupDateStudents
+{
+   
+    public virtual Guid Id { get; init; }
+
+
+    public virtual required string Name { get; init; }
+
+    //public virtual required DateTime StartedAt { get; set; }
+
+    public virtual UserData? Sensei { get; init; }
+    public virtual IList<UserData>? Student { get; init; }
+}
